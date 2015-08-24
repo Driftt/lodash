@@ -6,6 +6,8 @@ module.exports = {
   'escape': require('./string/escape'),
   'escapeRegExp': require('./string/escapeRegExp'),
   'kebabCase': require('./string/kebabCase'),
+  'lowerCase': require('./string/lowerCase'),
+  'lowerFirst': require('./string/lowerFirst'),
   'pad': require('./string/pad'),
   'padLeft': require('./string/padLeft'),
   'padRight': require('./string/padRight'),
@@ -16,10 +18,14 @@ module.exports = {
   'startsWith': require('./string/startsWith'),
   'template': require('./string/template'),
   'templateSettings': require('./string/templateSettings'),
+  'toLower': require('./string/toLower'),
+  'toUpper': require('./string/toUpper'),
   'trim': require('./string/trim'),
   'trimLeft': require('./string/trimLeft'),
   'trimRight': require('./string/trimRight'),
   'trunc': require('./string/trunc'),
   'unescape': require('./string/unescape'),
+  'upperCase': require('./string/upperCase'),
+  'upperFirst': require('./string/upperFirst'),
   'words': require('./string/words')
 };

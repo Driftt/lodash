@@ -1,16 +1,18 @@
+var baseIndexOf = require('./baseIndexOf');
+
 /**
- * Used by `_.trim` and `_.trimRight` to get the index of the last character
- * of `string` that is not found in `chars`.
+ * Used by `_.trim` and `_.trimRight` to get the index of the last string symbol
+ * that is not found in the character symbols.
  *
  * @private
- * @param {string} string The string to inspect.
- * @param {string} chars The characters to find.
- * @returns {number} Returns the index of the last character not found in `chars`.
+ * @param {Array} strSymbols The string symbols to inspect.
+ * @param {Array} chrSymbols The character symbols to find.
+ * @returns {number} Returns the index of the last unmatched string symbol.
  */
-function charsRightIndex(string, chars) {
-  var index = string.length;
+function charsRightIndex(strSymbols, chrSymbols) {
+  var index = strSymbols.length;
 
-  while (index-- && chars.indexOf(string.charAt(index)) > -1) {}
+  while (index-- && baseIndexOf(chrSymbols, strSymbols[index], 0) > -1) {}
   return index;
 }
 

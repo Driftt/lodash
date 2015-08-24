@@ -1,15 +1,18 @@
 var baseRandom = require('../internal/baseRandom'),
     isIterateeCall = require('../internal/isIterateeCall');
 
-/* Native method references for those with the same name as other `lodash` methods. */
+/* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeMin = Math.min,
     nativeRandom = Math.random;
 
 /**
  * Produces a random number between `min` and `max` (inclusive). If only one
  * argument is provided a number between `0` and the given number is returned.
- * If `floating` is `true`, or either `min` or `max` are floats, a floating-point
- * number is returned instead of an integer.
+ * If `floating` is `true`, or either `min` or `max` are floats, a
+ * floating-point number is returned instead of an integer.
+ *
+ * **Note:** JavaScript follows the IEEE-754 standard for resolving
+ * floating-point values which can produce unexpected results.
  *
  * @static
  * @memberOf _
@@ -36,10 +39,10 @@ function random(min, max, floating) {
   if (floating && isIterateeCall(min, max, floating)) {
     max = floating = undefined;
   }
-  var noMin = min == null,
-      noMax = max == null;
+  var noMin = min === undefined,
+      noMax = max === undefined;
 
-  if (floating == null) {
+  if (floating === undefined) {
     if (noMax && typeof min == 'boolean') {
       floating = min;
       min = 1;

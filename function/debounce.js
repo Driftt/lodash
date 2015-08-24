@@ -4,17 +4,17 @@ var isObject = require('../lang/isObject'),
 /** Used as the `TypeError` message for "Functions" methods. */
 var FUNC_ERROR_TEXT = 'Expected a function';
 
-/* Native method references for those with the same name as other `lodash` methods. */
+/* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max;
 
 /**
  * Creates a debounced function that delays invoking `func` until after `wait`
  * milliseconds have elapsed since the last time the debounced function was
  * invoked. The debounced function comes with a `cancel` method to cancel
- * delayed invocations. Provide an options object to indicate that `func`
- * should be invoked on the leading and/or trailing edge of the `wait` timeout.
- * Subsequent calls to the debounced function return the result of the last
- * `func` invocation.
+ * delayed `func` invocations and a `flush` method to immediately invoke them.
+ * Provide an options object to indicate that `func` should be invoked on the
+ * leading and/or trailing edge of the `wait` timeout. Subsequent calls to the
+ * debounced function return the result of the last `func` invocation.
  *
  * **Note:** If `leading` and `trailing` options are `true`, `func` is invoked
  * on the trailing edge of the timeout only if the the debounced function is
@@ -79,6 +79,7 @@ function debounce(func, wait, options) {
       timeoutId,
       trailingCall,
       lastCalled = 0,
+      leading = false,
       maxWait = false,
       trailing = true;
 
@@ -86,10 +87,7 @@ function debounce(func, wait, options) {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
   wait = wait < 0 ? 0 : (+wait || 0);
-  if (options === true) {
-    var leading = true;
-    trailing = false;
-  } else if (isObject(options)) {
+  if (isObject(options)) {
     leading = !!options.leading;
     maxWait = 'maxWait' in options && nativeMax(+options.maxWait || 0, wait);
     trailing = 'trailing' in options ? !!options.trailing : trailing;
@@ -103,7 +101,7 @@ function debounce(func, wait, options) {
       clearTimeout(maxTimeoutId);
     }
     lastCalled = 0;
-    maxTimeoutId = timeoutId = trailingCall = undefined;
+    args = maxTimeoutId = thisArg = timeoutId = trailingCall = undefined;
   }
 
   function complete(isCalled, id) {
@@ -127,6 +125,14 @@ function debounce(func, wait, options) {
     } else {
       timeoutId = setTimeout(delayed, remaining);
     }
+  }
+
+  function flush() {
+    if ((timeoutId && trailingCall) || (maxTimeoutId && trailing)) {
+      result = func.apply(thisArg, args);
+    }
+    cancel();
+    return result;
   }
 
   function maxDelayed() {
@@ -175,6 +181,7 @@ function debounce(func, wait, options) {
     return result;
   }
   debounced.cancel = cancel;
+  debounced.flush = flush;
   return debounced;
 }
 

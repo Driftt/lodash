@@ -10,7 +10,7 @@ var BIND_FLAG = 1;
  *
  * @private
  * @param {Function} func The function to partially apply arguments to.
- * @param {number} bitmask The bitmask of flags. See `createWrapper` for more details.
+ * @param {number} bitmask The bitmask of wrapper flags. See `createWrapper` for more details.
  * @param {*} thisArg The `this` binding of `func`.
  * @param {Array} partials The arguments to prepend to those provided to the new function.
  * @returns {Function} Returns the new bound function.

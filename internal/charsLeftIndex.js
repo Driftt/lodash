@@ -1,17 +1,19 @@
+var baseIndexOf = require('./baseIndexOf');
+
 /**
- * Used by `_.trim` and `_.trimLeft` to get the index of the first character
- * of `string` that is not found in `chars`.
+ * Used by `_.trim` and `_.trimLeft` to get the index of the first string symbol
+ * that is not found in the character symbols.
  *
  * @private
- * @param {string} string The string to inspect.
- * @param {string} chars The characters to find.
- * @returns {number} Returns the index of the first character not found in `chars`.
+ * @param {Array} strSymbols The string symbols to inspect.
+ * @param {Array} chrSymbols The character symbols to find.
+ * @returns {number} Returns the index of the first unmatched string symbol.
  */
-function charsLeftIndex(string, chars) {
+function charsLeftIndex(strSymbols, chrSymbols) {
   var index = -1,
-      length = string.length;
+      length = strSymbols.length;
 
-  while (++index < length && chars.indexOf(string.charAt(index)) > -1) {}
+  while (++index < length && baseIndexOf(chrSymbols, strSymbols[index], 0) > -1) {}
   return index;
 }
 

@@ -4,7 +4,8 @@ var baseSetData = require('./baseSetData'),
     createPartialWrapper = require('./createPartialWrapper'),
     getData = require('./getData'),
     mergeData = require('./mergeData'),
-    setData = require('./setData');
+    setData = require('./setData'),
+    toInteger = require('../lang/toInteger');
 
 /** Used to compose bitmasks for wrapper metadata. */
 var BIND_FLAG = 1,
@@ -15,7 +16,7 @@ var BIND_FLAG = 1,
 /** Used as the `TypeError` message for "Functions" methods. */
 var FUNC_ERROR_TEXT = 'Expected a function';
 
-/* Native method references for those with the same name as other `lodash` methods. */
+/* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max;
 
 /**
@@ -24,7 +25,7 @@ var nativeMax = Math.max;
  *
  * @private
  * @param {Function|string} func The function or method name to reference.
- * @param {number} bitmask The bitmask of flags.
+ * @param {number} bitmask The bitmask of wrapper flags.
  *  The bitmask may be composed of the following flags:
  *     1 - `_.bind`
  *     2 - `_.bindKey`
@@ -53,13 +54,16 @@ function createWrapper(func, bitmask, thisArg, partials, holders, argPos, ary, a
     bitmask &= ~(PARTIAL_FLAG | PARTIAL_RIGHT_FLAG);
     partials = holders = undefined;
   }
-  length -= (holders ? holders.length : 0);
+  length -= holders ? holders.length : 0;
   if (bitmask & PARTIAL_RIGHT_FLAG) {
     var partialsRight = partials,
         holdersRight = holders;
 
     partials = holders = undefined;
   }
+  ary = ary == null ? ary : nativeMax(toInteger(ary), 0);
+  arity = arity == null ? arity : toInteger(arity);
+
   var data = isBindKey ? undefined : getData(func),
       newData = [func, bitmask, thisArg, partials, holders, partialsRight, holdersRight, argPos, ary, arity];
 
@@ -70,7 +74,7 @@ function createWrapper(func, bitmask, thisArg, partials, holders, argPos, ary, a
   }
   newData[9] = arity == null
     ? (isBindKey ? 0 : func.length)
-    : (nativeMax(arity - length, 0) || 0);
+    : nativeMax(arity - length, 0);
 
   if (bitmask == BIND_FLAG) {
     var result = createBindWrapper(newData[0], newData[2]);

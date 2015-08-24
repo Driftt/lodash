@@ -1,6 +1,6 @@
-var arrayCopy = require('./arrayCopy'),
-    composeArgs = require('./composeArgs'),
+var composeArgs = require('./composeArgs'),
     composeArgsRight = require('./composeArgsRight'),
+    copyArray = require('./copyArray'),
     createCtorWrapper = require('./createCtorWrapper'),
     isLaziable = require('./isLaziable'),
     reorder = require('./reorder'),
@@ -15,9 +15,10 @@ var BIND_FLAG = 1,
     CURRY_RIGHT_FLAG = 16,
     PARTIAL_FLAG = 32,
     PARTIAL_RIGHT_FLAG = 64,
-    ARY_FLAG = 128;
+    ARY_FLAG = 128,
+    FLIP_FLAG = 512;
 
-/* Native method references for those with the same name as other `lodash` methods. */
+/* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max;
 
 /**
@@ -26,7 +27,7 @@ var nativeMax = Math.max;
  *
  * @private
  * @param {Function|string} func The function or method name to reference.
- * @param {number} bitmask The bitmask of flags. See `createWrapper` for more details.
+ * @param {number} bitmask The bitmask of wrapper flags. See `createWrapper` for more details.
  * @param {*} [thisArg] The `this` binding of `func`.
  * @param {Array} [partials] The arguments to prepend to those provided to the new function.
  * @param {Array} [holders] The `partials` placeholder indexes.
@@ -44,6 +45,7 @@ function createHybridWrapper(func, bitmask, thisArg, partials, holders, partials
       isCurry = bitmask & CURRY_FLAG,
       isCurryBound = bitmask & CURRY_BOUND_FLAG,
       isCurryRight = bitmask & CURRY_RIGHT_FLAG,
+      isFlip = bitmask & FLIP_FLAG,
       Ctor = isBindKey ? undefined : createCtorWrapper(func);
 
   function wrapper() {
@@ -68,7 +70,7 @@ function createHybridWrapper(func, bitmask, thisArg, partials, holders, partials
 
       length -= argsHolders.length;
       if (length < arity) {
-        var newArgPos = argPos ? arrayCopy(argPos) : undefined,
+        var newArgPos = argPos ? copyArray(argPos) : undefined,
             newArity = nativeMax(arity - length, 0),
             newsHolders = isCurry ? argsHolders : undefined,
             newHoldersRight = isCurry ? undefined : argsHolders,
@@ -96,6 +98,8 @@ function createHybridWrapper(func, bitmask, thisArg, partials, holders, partials
 
     if (argPos) {
       args = reorder(args, argPos);
+    } else if (isFlip && args.length > 1) {
+      args.reverse();
     }
     if (isAry && ary < args.length) {
       args.length = ary;

@@ -1,4 +1,5 @@
-var createPadDir = require('../internal/createPadDir');
+var createPadding = require('../internal/createPadding'),
+    toString = require('../lang/toString');
 
 /**
  * Pads `string` on the right side if it's shorter than `length`. Padding
@@ -22,6 +23,9 @@ var createPadDir = require('../internal/createPadDir');
  * _.padRight('abc', 3);
  * // => 'abc'
  */
-var padRight = createPadDir(true);
+function padRight(string, length, chars) {
+  string = toString(string);
+  return string + createPadding(string, length, chars);
+}
 
 module.exports = padRight;

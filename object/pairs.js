@@ -1,8 +1,8 @@
-var keys = require('./keys'),
-    toObject = require('../internal/toObject');
+var arrayMap = require('../internal/arrayMap'),
+    keys = require('./keys');
 
 /**
- * Creates a two dimensional array of the key-value pairs for `object`,
+ * Creates an array of the key-value pairs for `object`,
  * e.g. `[[key1, value1], [key2, value2]]`.
  *
  * @static
@@ -16,18 +16,9 @@ var keys = require('./keys'),
  * // => [['barney', 36], ['fred', 40]] (iteration order is not guaranteed)
  */
 function pairs(object) {
-  object = toObject(object);
-
-  var index = -1,
-      props = keys(object),
-      length = props.length,
-      result = Array(length);
-
-  while (++index < length) {
-    var key = props[index];
-    result[index] = [key, object[key]];
-  }
-  return result;
+  return arrayMap(keys(object), function(key) {
+    return [key, object[key]];
+  });
 }
 
 module.exports = pairs;

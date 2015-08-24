@@ -13,7 +13,14 @@
  * // => 10
  */
 function add(augend, addend) {
-  return (+augend || 0) + (+addend || 0);
+  var result;
+  if (augend === augend && augend != null) {
+    result = augend;
+  }
+  if (addend === addend && addend != null) {
+    result = result === undefined ? addend : (result + addend);
+  }
+  return result;
 }
 
 module.exports = add;

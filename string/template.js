@@ -1,15 +1,14 @@
-var assignOwnDefaults = require('../internal/assignOwnDefaults'),
-    assignWith = require('../internal/assignWith'),
-    attempt = require('../utility/attempt'),
-    baseAssign = require('../internal/baseAssign'),
-    baseToString = require('../internal/baseToString'),
+var attempt = require('../utility/attempt'),
     baseValues = require('../internal/baseValues'),
     escapeStringChar = require('../internal/escapeStringChar'),
+    extendDefaults = require('../internal/extendDefaults'),
+    extendWith = require('../object/extendWith'),
     isError = require('../lang/isError'),
     isIterateeCall = require('../internal/isIterateeCall'),
     keys = require('../object/keys'),
     reInterpolate = require('../internal/reInterpolate'),
-    templateSettings = require('./templateSettings');
+    templateSettings = require('./templateSettings'),
+    toString = require('../lang/toString');
 
 /** Used to match empty string literals in compiled template source. */
 var reEmptyStringLeading = /\b__p \+= '';/g,
@@ -129,10 +128,10 @@ function template(string, options, otherOptions) {
   if (otherOptions && isIterateeCall(string, options, otherOptions)) {
     options = otherOptions = undefined;
   }
-  string = baseToString(string);
-  options = assignWith(baseAssign({}, otherOptions || options), settings, assignOwnDefaults);
+  string = toString(string);
+  options = extendWith({}, otherOptions || options, settings, extendDefaults);
 
-  var imports = assignWith(baseAssign({}, options.imports), settings.imports, assignOwnDefaults),
+  var imports = extendWith({}, options.imports, settings.imports, extendDefaults),
       importsKeys = keys(imports),
       importsValues = baseValues(imports, importsKeys);
 
@@ -173,8 +172,8 @@ function template(string, options, otherOptions) {
     }
     index = offset + match.length;
 
-    // The JS engine embedded in Adobe products requires returning the `match`
-    // string in order to produce the correct `offset` value.
+    // The JS engine embedded in Adobe products needs `match` returned in
+    // order to produce the correct `offset` value.
     return match;
   });
 

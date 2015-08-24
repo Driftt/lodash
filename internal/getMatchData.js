@@ -2,7 +2,7 @@ var isStrictComparable = require('./isStrictComparable'),
     pairs = require('../object/pairs');
 
 /**
- * Gets the propery names, values, and compare flags of `object`.
+ * Gets the property names, values, and compare flags of `object`.
  *
  * @private
  * @param {Object} object The object to query.

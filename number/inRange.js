@@ -1,18 +1,20 @@
-/* Native method references for those with the same name as other `lodash` methods. */
+/* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max,
     nativeMin = Math.min;
 
 /**
  * Checks if `n` is between `start` and up to but not including, `end`. If
  * `end` is not specified it's set to `start` with `start` then set to `0`.
+ * If `start` is greater than `end` the params are swapped to support
+ * negative ranges.
  *
  * @static
  * @memberOf _
  * @category Number
- * @param {number} n The number to check.
+ * @param {number} number The number to check.
  * @param {number} [start=0] The start of the range.
  * @param {number} end The end of the range.
- * @returns {boolean} Returns `true` if `n` is in the range, else `false`.
+ * @returns {boolean} Returns `true` if `number` is in the range, else `false`.
  * @example
  *
  * _.inRange(3, 2, 4);
@@ -32,8 +34,11 @@ var nativeMax = Math.max,
  *
  * _.inRange(5.2, 4);
  * // => false
+ *
+ * _.inRange(-3, -2, -6);
+ * // => true
  */
-function inRange(value, start, end) {
+function inRange(number, start, end) {
   start = +start || 0;
   if (end === undefined) {
     end = start;
@@ -41,7 +46,7 @@ function inRange(value, start, end) {
   } else {
     end = +end || 0;
   }
-  return value >= nativeMin(start, end) && value < nativeMax(start, end);
+  return number >= nativeMin(start, end) && number < nativeMax(start, end);
 }
 
 module.exports = inRange;

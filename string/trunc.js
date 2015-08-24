@@ -1,7 +1,9 @@
-var baseToString = require('../internal/baseToString'),
-    isIterateeCall = require('../internal/isIterateeCall'),
-    isObject = require('../lang/isObject'),
-    isRegExp = require('../lang/isRegExp');
+var isObject = require('../lang/isObject'),
+    isRegExp = require('../lang/isRegExp'),
+    stringSize = require('../internal/stringSize'),
+    stringToArray = require('../internal/stringToArray'),
+    toInteger = require('../lang/toInteger'),
+    toString = require('../lang/toString');
 
 /** Used as default options for `_.trunc`. */
 var DEFAULT_TRUNC_LENGTH = 30,
@@ -9,6 +11,17 @@ var DEFAULT_TRUNC_LENGTH = 30,
 
 /** Used to match `RegExp` flags from their coerced string values. */
 var reFlags = /\w*$/;
+
+/** Used to compose unicode character classes. */
+var rsAstralRange = '\\ud800-\\udfff',
+    rsComboRange = '\\u0300-\\u036f\\ufe20-\\ufe23',
+    rsVarRange = '\\ufe0e\\ufe0f';
+
+/** Used to compose unicode capture groups. */
+var rsZWJ = '\\u200d';
+
+/** Used to detect strings with [zero-width joiners or code points from the astral planes](http://eev.ee/blog/2015/09/12/dark-corners-of-unicode/). */
+var reHasComplexSymbol = RegExp('[' + rsZWJ + rsAstralRange + rsComboRange + rsVarRange + ']');
 
 /**
  * Truncates `string` if it's longer than the given maximum string length.
@@ -19,19 +32,15 @@ var reFlags = /\w*$/;
  * @memberOf _
  * @category String
  * @param {string} [string=''] The string to truncate.
- * @param {Object|number} [options] The options object or maximum string length.
+ * @param {Object} [options] The options object.
  * @param {number} [options.length=30] The maximum string length.
  * @param {string} [options.omission='...'] The string to indicate text is omitted.
  * @param {RegExp|string} [options.separator] The separator pattern to truncate to.
- * @param- {Object} [guard] Enables use as a callback for functions like `_.map`.
  * @returns {string} Returns the truncated string.
  * @example
  *
  * _.trunc('hi-diddly-ho there, neighborino');
  * // => 'hi-diddly-ho there, neighbo...'
- *
- * _.trunc('hi-diddly-ho there, neighborino', 24);
- * // => 'hi-diddly-ho there, n...'
  *
  * _.trunc('hi-diddly-ho there, neighborino', {
  *   'length': 24,
@@ -50,48 +59,52 @@ var reFlags = /\w*$/;
  * });
  * // => 'hi-diddly-ho there, neig [...]'
  */
-function trunc(string, options, guard) {
-  if (guard && isIterateeCall(string, options, guard)) {
-    options = undefined;
-  }
+function trunc(string, options) {
   var length = DEFAULT_TRUNC_LENGTH,
       omission = DEFAULT_TRUNC_OMISSION;
 
-  if (options != null) {
-    if (isObject(options)) {
-      var separator = 'separator' in options ? options.separator : separator;
-      length = 'length' in options ? (+options.length || 0) : length;
-      omission = 'omission' in options ? baseToString(options.omission) : omission;
-    } else {
-      length = +options || 0;
-    }
+  if (isObject(options)) {
+    var separator = 'separator' in options ? options.separator : separator;
+    length = 'length' in options ? toInteger(options.length) : length;
+    omission = 'omission' in options ? toString(options.omission) : omission;
   }
-  string = baseToString(string);
-  if (length >= string.length) {
+  string = toString(string);
+
+  var strLength = string.length;
+  if (reHasComplexSymbol.test(string)) {
+    var strSymbols = stringToArray(string);
+    strLength = strSymbols.length;
+  }
+  if (length >= strLength) {
     return string;
   }
-  var end = length - omission.length;
+  var end = length - stringSize(omission);
   if (end < 1) {
     return omission;
   }
-  var result = string.slice(0, end);
-  if (separator == null) {
+  var result = strSymbols
+    ? strSymbols.slice(0, end).join('')
+    : string.slice(0, end);
+
+  if (separator === undefined) {
     return result + omission;
+  }
+  if (strSymbols) {
+    end += (result.length - end);
   }
   if (isRegExp(separator)) {
     if (string.slice(end).search(separator)) {
       var match,
-          newEnd,
-          substring = string.slice(0, end);
+          substring = result;
 
       if (!separator.global) {
-        separator = RegExp(separator.source, (reFlags.exec(separator) || '') + 'g');
+        separator = RegExp(separator.source, toString(reFlags.exec(separator)) + 'g');
       }
       separator.lastIndex = 0;
       while ((match = separator.exec(substring))) {
-        newEnd = match.index;
+        var newEnd = match.index;
       }
-      result = result.slice(0, newEnd == null ? end : newEnd);
+      result = result.slice(0, newEnd === undefined ? end : newEnd);
     }
   } else if (string.indexOf(separator, end) != end) {
     var index = result.lastIndexOf(separator);
