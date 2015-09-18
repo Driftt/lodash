@@ -1,9 +1,9 @@
-import isObjectLike from '../internal/isObjectLike';
+import isObjectLike from './isObjectLike';
 
 /** `Object#toString` result references. */
 var numberTag = '[object Number]';
 
-/** Used for native method references. */
+/** Used for built-in method references. */
 var objectProto = Object.prototype;
 
 /**
@@ -35,7 +35,8 @@ var objToString = objectProto.toString;
  * // => false
  */
 function isNumber(value) {
-  return typeof value == 'number' || (isObjectLike(value) && objToString.call(value) == numberTag);
+  return typeof value == 'number' ||
+    (isObjectLike(value) && objToString.call(value) == numberTag);
 }
 
 export default isNumber;

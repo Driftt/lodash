@@ -1,4 +1,5 @@
-import createPadDir from '../internal/createPadDir';
+import createPadding from '../internal/createPadding';
+import toString from '../lang/toString';
 
 /**
  * Pads `string` on the left side if it's shorter than `length`. Padding
@@ -22,6 +23,9 @@ import createPadDir from '../internal/createPadDir';
  * _.padLeft('abc', 3);
  * // => 'abc'
  */
-var padLeft = createPadDir();
+function padLeft(string, length, chars) {
+  string = toString(string);
+  return createPadding(string, length, chars) + string;
+}
 
 export default padLeft;

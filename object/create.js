@@ -1,6 +1,5 @@
 import baseAssign from '../internal/baseAssign';
 import baseCreate from '../internal/baseCreate';
-import isIterateeCall from '../internal/isIterateeCall';
 
 /**
  * Creates an object that inherits from the given `prototype` object. If a
@@ -12,7 +11,6 @@ import isIterateeCall from '../internal/isIterateeCall';
  * @category Object
  * @param {Object} prototype The object to inherit from.
  * @param {Object} [properties] The properties to assign to the object.
- * @param- {Object} [guard] Enables use as a callback for functions like `_.map`.
  * @returns {Object} Returns the new object.
  * @example
  *
@@ -36,11 +34,8 @@ import isIterateeCall from '../internal/isIterateeCall';
  * circle instanceof Shape;
  * // => true
  */
-function create(prototype, properties, guard) {
+function create(prototype, properties) {
   var result = baseCreate(prototype);
-  if (guard && isIterateeCall(prototype, properties, guard)) {
-    properties = undefined;
-  }
   return properties ? baseAssign(result, properties) : result;
 }
 

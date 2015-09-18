@@ -8,7 +8,6 @@ import isArray from '../lang/isArray';
  *
  * @static
  * @memberOf _
- * @alias object
  * @category Array
  * @param {Array} props The property names.
  * @param {Array} [values=[]] The property values.

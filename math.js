@@ -1,17 +1,11 @@
-import add from './math/add';
-import ceil from './math/ceil';
-import floor from './math/floor';
-import max from './math/max';
-import min from './math/min';
-import round from './math/round';
-import sum from './math/sum';
-
-export default {
-  'add': add,
-  'ceil': ceil,
-  'floor': floor,
-  'max': max,
-  'min': min,
-  'round': round,
-  'sum': sum
-};
+export { default as add } from './math/add';
+export { default as ceil } from './math/ceil';
+export { default as floor } from './math/floor';
+export { default as max } from './math/max';
+export { default as maxBy } from './math/maxBy';
+export { default as min } from './math/min';
+export { default as minBy } from './math/minBy';
+export { default as round } from './math/round';
+export { default as sum } from './math/sum';
+export { default as sumBy } from './math/sumBy';
+export { default as default } from './math.default';

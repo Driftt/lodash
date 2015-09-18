@@ -25,7 +25,7 @@ import keysIn from './keysIn';
  * // => [1, 2, 3] (iteration order is not guaranteed)
  */
 function valuesIn(object) {
-  return baseValues(object, keysIn(object));
+  return object == null ? baseValues(object, keysIn(object)) : [];
 }
 
 export default valuesIn;

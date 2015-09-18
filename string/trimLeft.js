@@ -1,6 +1,6 @@
-import baseToString from '../internal/baseToString';
 import charsLeftIndex from '../internal/charsLeftIndex';
-import isIterateeCall from '../internal/isIterateeCall';
+import stringToArray from '../internal/stringToArray';
+import toString from '../lang/toString';
 import trimmedLeftIndex from '../internal/trimmedLeftIndex';
 
 /**
@@ -11,7 +11,7 @@ import trimmedLeftIndex from '../internal/trimmedLeftIndex';
  * @category String
  * @param {string} [string=''] The string to trim.
  * @param {string} [chars=whitespace] The characters to trim.
- * @param- {Object} [guard] Enables use as a callback for functions like `_.map`.
+ * @param- {Object} [guard] Enables use as an iteratee for functions like `_.map`.
  * @returns {string} Returns the trimmed string.
  * @example
  *
@@ -22,15 +22,19 @@ import trimmedLeftIndex from '../internal/trimmedLeftIndex';
  * // => 'abc-_-'
  */
 function trimLeft(string, chars, guard) {
-  var value = string;
-  string = baseToString(string);
+  string = toString(string);
   if (!string) {
     return string;
   }
-  if (guard ? isIterateeCall(value, chars, guard) : chars == null) {
+  if (guard || chars === undefined) {
     return string.slice(trimmedLeftIndex(string));
   }
-  return string.slice(charsLeftIndex(string, (chars + '')));
+  chars = (chars + '');
+  if (!chars) {
+    return string;
+  }
+  var strSymbols = stringToArray(string);
+  return strSymbols.slice(charsLeftIndex(strSymbols, stringToArray(chars))).join('');
 }
 
 export default trimLeft;

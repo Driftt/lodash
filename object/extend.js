@@ -1,2 +1,35 @@
-import assign from './assign'
-export default assign;
+import copyObject from '../internal/copyObject';
+import createAssigner from '../internal/createAssigner';
+import keysIn from './keysIn';
+
+/**
+ * This method is like `_.assign` except that it iterates over own and
+ * inherited source properties.
+ *
+ * @static
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The destination object.
+ * @param {...Object} [sources] The source objects.
+ * @returns {Object} Returns `object`.
+ * @example
+ *
+ * function Foo() {
+ *   this.b = 2;
+ * }
+ *
+ * function Bar() {
+ *   this.d = 4;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ * Bar.prototype.e = 5;
+ *
+ * _.extend({ 'a': 1 }, new Foo, new Bar);
+ * // => { 'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5 }
+ */
+var extend = createAssigner(function(object, source) {
+  copyObject(source, keysIn(source), object);
+});
+
+export default extend;

@@ -7,7 +7,6 @@ import keysIn from './keysIn';
  *
  * @static
  * @memberOf _
- * @alias methods
  * @category Object
  * @param {Object} object The object to inspect.
  * @returns {Array} Returns the new array of property names.
@@ -17,7 +16,7 @@ import keysIn from './keysIn';
  * // => ['after', 'ary', 'assign', ...]
  */
 function functions(object) {
-  return baseFunctions(object, keysIn(object));
+  return object == null ? [] : baseFunctions(object, keysIn(object));
 }
 
 export default functions;
