@@ -190,7 +190,6 @@ export { default as repeat } from './string/repeat';
 export { default as rest } from './function/rest';
 export { default as result } from './object/result';
 export { default as reverse } from './array/reverse';
-export { default as reverse } from './array/reverse';
 export { default as round } from './math/round';
 export { default as sample } from './collection/sample';
 export { default as sampleSize } from './collection/sampleSize';
